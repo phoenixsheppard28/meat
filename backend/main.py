@@ -19,8 +19,13 @@ headers = {
 
 
 @app.get("/")
-async def hello(db: Annotated[Session, Depends(get_db)]):
+async def now():
+    pass
+
+
+async def createCertifiedHumane(db: Annotated[Session, Depends(get_db)]):
     URL = "https://certifiedhumane.org/take-action-for-farm-animals/shop/"
+    CERTIFICATION = "Certified Humane"
 
     async with AsyncClient(headers=headers) as client:
         res = await client.get(URL)
@@ -31,6 +36,9 @@ async def hello(db: Annotated[Session, Depends(get_db)]):
     data = data[1:]
 
     m = [models.Brand(id=brand_name) for brand_name in data]
+    certification_obj = models.Certification(id=CERTIFICATION)
+    for d in m:
+        d.certifications.append(certification_obj)
     for brand in m:
         db.add(brand)
 
