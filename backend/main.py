@@ -1,7 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from httpx import AsyncClient
+from typing import Annotated
 from bs4 import BeautifulSoup
 import re
+from sqlmodel.orm.session import Session
+from database import get_db
+import models
+
 
 app = FastAPI()
 
@@ -14,16 +19,19 @@ headers = {
 
 
 @app.get("/")
-async def hello():
+async def hello(db: Annotated[Session, Depends(get_db)]):
     URL = "https://certifiedhumane.org/take-action-for-farm-animals/shop/"
 
     async with AsyncClient(headers=headers) as client:
         res = await client.get(URL)
-        print(res.text)
 
-        soup = BeautifulSoup(res.text, "lxml")
-        rows = soup.find_all(class_=re.compile(r"^row-\d+$"))
-        data = [row.get_text(strip=True, separator=",").split(",")[0] for row in rows]
-        data = data[1:]
+    soup = BeautifulSoup(res.text, "lxml")
+    rows = soup.find_all(class_=re.compile(r"^row-\d+$"))
+    data = [row.get_text(strip=True, separator=",").split(",")[0] for row in rows]
+    data = data[1:]
 
-        return data
+    m = [models.Brand(id=brand_name) for brand_name in data]
+    for brand in m:
+        db.add(brand)
+
+    db.commit()

@@ -1,4 +1,4 @@
-from sqlmodel import Field, create_engine, SQLModel, Relationship
+from sqlmodel import Field, SQLModel, Relationship
 
 
 class BrandCertificationLink(SQLModel, table=True):
