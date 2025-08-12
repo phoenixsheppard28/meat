@@ -7,7 +7,7 @@ from sqlmodel.orm.session import Session
 from database import get_db
 import models
 
-
+hi = []
 app = FastAPI()
 
 headers = {
