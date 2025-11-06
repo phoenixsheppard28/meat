@@ -32,7 +32,9 @@ async def createCertifiedHumane(db: Annotated[Session, Depends(get_db)]):
 
     soup = BeautifulSoup(res.text, "lxml")
     rows = soup.find_all(class_=re.compile(r"^row-\d+$"))
-    data = [row.get_text(strip=True, separator=",").split(",")[0] for row in rows]
+    data = [
+        row.get_text(strip=True, separator=",").split(",")[0] for row in rows
+    ]
     data = data[1:]
 
     m = [models.Brand(id=brand_name) for brand_name in data]

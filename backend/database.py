@@ -7,8 +7,8 @@ from typing import Iterator
 cfg = get_config()
 
 
-def _init_engine(cfg: Config) -> Engine:
-    engine = create_engine(cfg.DATABASE_URL)
+def _init_engine(c: Config) -> Engine:
+    engine = create_engine(c.DATABASE_URL)
     SQLModel.metadata.create_all(engine)
     return engine
 
