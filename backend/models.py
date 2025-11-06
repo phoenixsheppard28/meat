@@ -1,6 +1,9 @@
 from sqlmodel import Field, SQLModel, Relationship
 
 
+# may have to redo all of these
+
+
 class BrandCertificationLink(SQLModel, table=True):
     brand_id: str = Field(
         default=None, foreign_key="brand.id", primary_key=True
